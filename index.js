@@ -1,60 +1,35 @@
-const { ApolloServer } = require('apollo-server')
+const { ApolloServer } = require('apollo-server-express')
+const express = require('express')
+const { MongoClient } = require('mongodb')
+const expressPlayground = require('graphql-playground-middleware-express').default
+const { readFileSync } = require('fs')
 
-const typeDefs = `
-  enum PhotoCategory {
-    SELFIE PORTRAIT ACTION LANDSCAPE GRAPHIC
-  }
-  type Photo {
-    id: ID!
-    url: String!
-    name: String!
-    description: String
-    category: PhotoCategory!
-  }
-  input PostPhotoInput {
-    name: String!
-    category: PhotoCategory = PORTRAIT
-    description: String
-  }
+require('dotenv').config()
+const typeDefs = readFileSync('./typeDefs.graphql', 'UTF-8')
+const resolvers = require('./resolvers')
 
-  type Query {
-    totalPhotos: Int!
-    allPhotos: [Photo!]!
-  }
-
-  type Mutation {
-    postPhoto(input: PostPhotoInput!): Photo!
-  }
-`
-
-var _id = 0
-var photos = []
-
-const resolvers = {
-  Query: {
-    totalPhotos: () => photos.length,
-    allPhotos: () => photos
-  },
-  Mutation: {
-    postPhoto( parent, args) {
-      var newPhoto = {
-        id: _id++,
-        ...args.input
-      }
-      photos.push(newPhoto)
-      return newPhoto
+async function start() {
+  var app = express()
+  const MONGO_DB = process.env.DB_HOST
+  const client = await MongoClient.connect(
+    MONGO_DB,
+    { useNewUrlParser: true }
+  )
+  const db = client.db()
+  const context = { db }
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: async ({ req }) => {
+      const githubToken = req.headers.authorization
+      const currentUser = await db.collection('users').findOne({ githubToken })
+      return { db, currentUser }
     }
-  },
-  Photo: {
-    url: parent => `http://yoursite.com/img/${parent.id}.jpg`
-  }
+  })
+  server.applyMiddleware({ app })
+  app.get('/', (req, res) => res.end(' Welcome to the PhotoShare API'))
+  app.get('/playground', expressPlayground({ endpoint: '/graphql' }))
+  app.listen({ port: 4000 }, () => console.log( `GraphQL Server running at http://localhost:4000${server.graphqlPath}`) )
 }
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers
-})
-
-server
-.listen()
-.then(({ url}) => console.log( ` GraphQL Service running on ${ url} `))
+start()

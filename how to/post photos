@@ -1,0 +1,10 @@
+mutation post($input: PostPhotoInput!) {
+  postPhoto(input: $input) {
+    id
+    url
+    postedBy {
+      name
+      avatar
+    }
+  }
+}
