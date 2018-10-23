@@ -1,0 +1,3 @@
+curl -X POST -H "Content-Type: application/json" --data '{ "query": "{ totalUsers, totalPhotos}" }' http://localhost:4000/graphql
+
+> {"data":{"totalUsers":4,"totalPhotos":10}}
