@@ -13,9 +13,6 @@ const ADD_FAKE_USERS_MUTATION = gql `
   }
 `
 
-console.log('localStorage')
-console.log(localStorage)
-
 const Users = () =>
   <Query query={ROOT_QUERY} fetchPolicy="cache-and-network">
     {({ data, loading, refetch }) => loading ?
@@ -42,7 +39,7 @@ const UserList = ({ count, users, refetchUsers }) =>
     <Mutation mutation ={ADD_FAKE_USERS_MUTATION} variables ={{ count: 1 }}
       update ={updateUserCache}>
       {addFakeUsers =>
-        <button onClick={ addFakeUsers} >
+        <button onClick={addFakeUsers} >
           Add Fake User
         </button >
       }

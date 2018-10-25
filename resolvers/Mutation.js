@@ -20,11 +20,6 @@ module.exports = {
   },
 
   async githubAuth(parent, { code }, { db }) {
-
-    console.log('code')
-    console.log(code)
-    console.log('db')
-    console.log(db)
     // 1. Obtain data from GitHub
     let {
       message,
@@ -37,17 +32,6 @@ module.exports = {
       client_secret: process.env.SECRET,
       code
     })
-
-    console.log('message')
-    console.log(message)
-    console.log('access_token')
-    console.log(access_token)
-    console.log('avatar_url')
-    console.log(avatar_url)
-    console.log('login')
-    console.log(login)
-    console.log('name')
-    console.log(name)
 
     // 2. If there is a message, something went wrong
     if (message) { throw new Error(message) }

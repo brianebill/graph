@@ -12,21 +12,22 @@ const GITHUB_AUTH_MUTATION = gql`
 
 const CurrentUser = ({ name, avatar, logout }) =>
   <div>
-    <img src={avatar} width={48} height={48} alt =""/>
-    <h1>{name}</h1>
-    <button onClick={logout}>logout</button>
+      <img src={avatar} width={48} height={48} alt="" />
+      <h1>{name}</h1>
+      <button onClick={logout}>logout</button>
   </div>
 
 const Me = ({ logout, requestCode, signingIn }) =>
-  <Query query={ ROOT_QUERY}>
-    {({ loading, data }) =>
-      data.me ?
-        <CurrentUser {...data.me} logout={ logout}/> :
-        loading ? <p>loading...</p> :
-        <button onClick={requestCode} disabled={signingIn}>
-          Sign In with GitHub
-        </button>
-    }
+  <Query query={ROOT_QUERY} fetchPolicy="cache-and-network">
+      {({ loading, data }) => data.me ?
+          <CurrentUser {...data.me} logout={logout} /> :
+          loading ?
+              <p>loading... </p> :
+              <button onClick={requestCode}
+                  disabled={signingIn}>
+                  Sign In with Github
+              </button>
+      }
   </Query>
 
 class AuthorizedUser extends Component {
@@ -69,7 +70,7 @@ class AuthorizedUser extends Component {
               <Me
                 signingIn={this.state.signingIn}
                 requestCode={this.requestCode}
-                logout={() => localStorage.removeItem('token')}/>
+                logout={this.logout} />
               )
             }
           }
