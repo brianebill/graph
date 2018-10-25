@@ -20,6 +20,11 @@ module.exports = {
   },
 
   async githubAuth(parent, { code }, { db }) {
+
+    console.log('code')
+    console.log(code)
+    console.log('db')
+    console.log(db)
     // 1. Obtain data from GitHub
     let {
       message,
@@ -32,12 +37,32 @@ module.exports = {
       client_secret: process.env.SECRET,
       code
     })
+
+    console.log('message')
+    console.log(message)
+    console.log('access_token')
+    console.log(access_token)
+    console.log('avatar_url')
+    console.log(avatar_url)
+    console.log('login')
+    console.log(login)
+    console.log('name')
+    console.log(name)
+
     // 2. If there is a message, something went wrong
-    if (message) { throw new Error( message) }
+    if (message) { throw new Error(message) }
     // 3. Package the results into a single object
-    let latestUserInfo = { name, githubLogin: login, githubToken: access_token, avatar: avatar_url }
+    let latestUserInfo = {
+      name,
+      githubLogin: login,
+      githubToken: access_token,
+      avatar: avatar_url
+    }
     // 4. Add or update the record with the new information
-    const { ops:[user] } = await db.collection('users').replaceOne({ githubLogin: login }, latestUserInfo, { upsert: true })
+    const user = await db
+    .collection('users')
+    .replaceOne({ githubLogin: login }, latestUserInfo, { upsert: true })
+    .then(({ ops }) => ops[0])
     // 5. Return user data and their token
     return { user, token: access_token }
   },

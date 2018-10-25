@@ -1,6 +1,6 @@
 `Authorizing the User It is now time to authorize the user. To facilitate this example, we use React Router, which we install via npm:`
 
-npm install react-router-dom.
+npm install react-router-dom
 
 `Let’s modify our main <App/> component. We’ll incorporate the BrowserRouter, and we’ll add a new component, AuthorizedUser, that we can use to authorize users with GitHub:`
 
@@ -43,7 +43,7 @@ We are now additionally asking for the me field, which returns information about
 
 Notice that we’ve added a fragment called userInfo to the query document. This allows us obtain the same information about a User in two places: the me field and the allUsers field.
 
-The AuthorizedUser component should redirect the user to GitHub to request a code. That code should be passed back from GitHub to our app at http:// localhost: 3000.
+The AuthorizedUser component should redirect the user to GitHub to request a code. That code should be passed back from GitHub to our app at http://localhost:3000
 
 In a new file called AuthorizedUser.js, let’s implement this process:`
 
@@ -81,7 +81,7 @@ Instead of sending the user an alert with the GitHub code, we need to send it to
 
 import { Mutation } from 'react-apollo'
 import { gql } from 'apollo-boost'
-import { ROOT_QUERY } from './ App'
+import { ROOT_QUERY } from './App'
 
 const GITHUB_AUTH_MUTATION = gql `
   mutation githubAuth( $ code:String!) {

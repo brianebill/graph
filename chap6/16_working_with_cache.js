@@ -1,6 +1,6 @@
 `Working with the Cache As developers, we’re in the network request minimization business. We don’t want our users to have to make extraneous requests. In order to minimize the number of network requests that our apps send, we can dig deeper into how to customize the Apollo Cache.
 
-Fetch Policies By default, Apollo Client stores data in a local JavaScript variable. Every time we create a client, a cache is created for us. Every time we send an operation, the response is cached locally. The fetchPolicy tells Apollo Client where to look for data to resolve an operation: either the local cache or a network request.
+Fetch Policies - By default, Apollo Client stores data in a local JavaScript variable. Every time we create a client, a cache is created for us. Every time we send an operation, the response is cached locally. The fetchPolicy tells Apollo Client where to look for data to resolve an operation: either the local cache or a network request.
 
 The default fetchPolicy is cache-first. This means that the client will look locally in the cache for data to resolve the operation. If the client can resolve the operation without sending a network request, it will do so. However, if data to resolve the query is not in the cache then the client will send a network request to the GraphQL service.
 
@@ -27,9 +27,8 @@ npm install apollo-cache-persist
 
 To implement cache persistance, we’ll need to create our own cache object and add it to the client when we configure our application. Add the following code to the src/ index.js file: `
 
-import ApolloClient, { InMemoryCache }
-from 'apollo-boost' import { persistCache }
-from 'apollo-cache-persist'
+import ApolloClient, { InMemoryCache } from 'apollo-boost'
+import { persistCache } from 'apollo-cache-persist'
 
 const cache = new InMemoryCache()
 persistCache({ cache, storage: localStorage })
@@ -54,4 +53,4 @@ if (localStorage[' apollo-cache-persist']) {
 
 We’ve successfully minimized the number of network requests to our service simply by using Apollo Client’s cache effectively.
 
-In the next section, we will learn about how we can write data directly to the local cache.` 
+In the next section, we will learn about how we can write data directly to the local cache.`

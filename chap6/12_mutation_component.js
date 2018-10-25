@@ -1,4 +1,4 @@
-`The Mutation Component When we want to send mutations to the GraphQL service, we can use the Mutation component. In the next example, we use this component to handle the addFakeUsers mutation. When we send this mutation, we write the new list of users directly to the cache. To begin, let’s import the Mutation component and add a mutation to the Users.js file:`
+`The Mutation Component - When we want to send mutations to the GraphQL service, we can use the Mutation component. In the next example, we use this component to handle the addFakeUsers mutation. When we send this mutation, we write the new list of users directly to the cache. To begin, let’s import the Mutation component and add a mutation to the Users.js file:`
 
 import { Query, Mutation } from 'react-apollo'
 import { gql } from 'apollo-boost'
