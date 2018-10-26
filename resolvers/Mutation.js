@@ -1,21 +1,25 @@
 const { authorizeWithGithub } = require('../lib')
 const fetch = require('node-fetch')
+const { uploadStream } = require('../ lib')
+const path = require(' path')
 
 // const { ObjectID } = require('mongodb')
 
 module.exports = {
-  async postPhoto( parent, args, { db, currentUser }) {
-    // 1. If there is not a user in context, throw an error
+  async postPhoto(root, args, { db, currentUser, pubsub }) {
     if (!currentUser) { throw new Error('only an authorized user can post a photo') }
-    // 2. Save the current user's id with the photo
     const newPhoto = {
       ...args.input,
       userID: currentUser.githubLogin,
       created: new Date()
     }
-    // 3. Insert the new photo, capture the id that the database created
     const { insertedIds } = await db.collection('photos').insert(newPhoto)
-    newPhoto.id = insertedIds[0].toString()
+    newPhoto.id = insertedIds[0]
+    var toPath = path.join(__dirname, '..', 'assets', 'photos', `${newPhoto.id}.jpg`)
+    await { stream } = args.input.file
+    await uploadStream(stream, toPath)
+    // await uploadFile(input.file, toPath)
+    pubsub.publish('photo-added', { newPhoto })
     return newPhoto
   },
 
@@ -43,6 +47,12 @@ module.exports = {
       avatar: avatar_url
     }
     // 4. Add or update the record with the new information
+    // const { ops:[user] } = await db
+    // .collection('users')
+    // .replaceOne({ githubLogin: login }, latestUserInfo, { upsert: true })
+    //
+    // return { user, token: access_token }
+
     const user = await db
     .collection('users')
     .replaceOne({ githubLogin: login }, latestUserInfo, { upsert: true })
@@ -63,6 +73,26 @@ module.exports = {
     await db.collection('users').insert(users)
     return users
   },
+
+  // addFakeUsers: async (root, { count }, { db, pubsub }) => {
+  //   var randomUserApi = `https://randomuser.me/api/?results=${count}`
+  //   var { results } = await fetch(randomUserApi).then(res => res.json())
+  //   var users = results.map( r => ({
+  //     githubLogin: r.login.username,
+  //     name: `${r.name.first} ${r.name.last}`,
+  //     avatar: r.picture.thumbnail,
+  //     githubToken: r.login.sha1
+  //   }))
+  //
+  //   var newUsers = await db.collection('users')
+  //       .find()
+  //       .sort({ _id: -1 })
+  //       .limit(count)
+  //       .toArray()
+  //
+  //   newUsers.forEach(newUser => pubsub.publish('user-added', {newUser}))
+  //   return users
+  // },
 
   async fakeUserAuth(parent, { githubLogin }, { db }) {
     var user = await db.collection('users').findOne({ githubLogin })

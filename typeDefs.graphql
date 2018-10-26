@@ -1,5 +1,12 @@
 scalar DateTime
 
+scalar Upload input PostPhotoInput {
+  name: String!
+  category: Photo_Category = PORTRAIT
+  description: String,
+  file: Upload!
+}
+
 type User {
   githubLogin: ID!
   name: String
@@ -47,8 +54,13 @@ type Query {
 }
 
 type Mutation {
-  addFakeUsers(count: Int = 1): [User!]!
+  addFakeUsers(count: Int = 3): [User!]!
   fakeUserAuth(githubLogin: ID!): AuthPayload!
   postPhoto(input: PostPhotoInput!): Photo!
   githubAuth(code: String!): AuthPayload!
+}
+
+type Subscription {
+  newPhoto: Photo!
+  newUser: User!
 }

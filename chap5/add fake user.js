@@ -1,11 +1,11 @@
 mutation {
-  addFakeUsers(count: 3) {
+  addFakeUsers(count: 1) {
     name
   }
 }
 
 mutation {
-  fakeUserAuth(githubLogin:"jDoe") { 
+  fakeUserAuth(githubLogin:"jDoe") {
     token
   }
 }

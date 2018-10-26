@@ -32,13 +32,16 @@ import { persistCache } from 'apollo-cache-persist'
 
 const cache = new InMemoryCache()
 persistCache({ cache, storage: localStorage })
-const client = new ApolloClient({ cache, ... })
+const client = new ApolloClient({
+  cache,
+  ...
+})
 
 `First, we’ve created our own cache instance using the InMemoryCache constructor provided with apollo-boost. Next, we imported the persistCache method from apollo-cache-persist. Using InMemoryCache, we create a new cache instance and send it to the persistCache method along with a storage location. We’ve chosen to save the cache in the browser window’s localStorage store. This means that once we start our application, we should see the value of our cache saved to our store.
 
 You can check for it by adding the following syntax: `
 
-console.log( localStorage[' apollo-cache-persist'])
+console.log(localStorage['apollo-cache-persist'])
 
 `The next step is to check localStorage on startup to see if we already have a cache saved. If we do, then we’ll want to initialize our local cache with that data before creating the client: `
 
